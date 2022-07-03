@@ -1,8 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {ConnectionContext} from "../connection-context/ConnectionContextProvider";
 
 export interface IPlaylistContextValue {
     playlist: any[]    // TODO: type the array
+    addVideo: (youtubeURL: string) => void
 }
 
 const usePlaylist = (): IPlaylistContextValue => {
@@ -23,11 +24,16 @@ const usePlaylist = (): IPlaylistContextValue => {
         return () => {
             connection?.socket?.off("playlist:all");
         }
-    }, [connection?.isConnected]);
+    }, [connection?.isConnected, connection?.socket]);
+
+    const addVideo = useCallback((youtubeURL: string) => {
+        connection?.socket?.emit('playlist:add', {url: youtubeURL});
+    }, [connection?.socket]);
 
 
     return {
-        playlist
+        playlist,
+        addVideo
     };
 }
 
