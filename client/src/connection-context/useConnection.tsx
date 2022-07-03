@@ -28,8 +28,8 @@ const useConnection = (): IConnectionContextValue => {
         newSocket.on("disconnect", onDisconnect);
 
         return () => {
-            socket?.off("connect");
-            socket?.off("disconnect");
+            newSocket?.off("connect");
+            newSocket?.off("disconnect");
         }
     }, [userMessageManager]);
 
