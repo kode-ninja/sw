@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const { Server } = require("socket.io");
 const cors = require("cors");
+const registerPlaylistHandlers = require("./playlistHandler");
 
 app.use(cors());
 app.use(express.json());
@@ -20,14 +21,17 @@ const io = new Server(httpServer, {
 //     res.sendFile(__dirname + '/index.html');
 // });
 
+
 io.on('connection', (socket) => {
-    console.log('a user connected on ', socket.id);         // TODO: delete
+    console.log('a user connected on socket.id', socket.id);         // TODO: delete
+
+    registerPlaylistHandlers(io, socket);
 
     socket.on('disconnect', () => {
-        console.log('user disconnected from', socket.id);   // TODO: delete
+        console.log('user disconnected from socket.id', socket.id);   // TODO: delete
     });
 });
 
-server.listen(config.server.port, () => {
+httpServer.listen(config.server.port, () => {
     console.log(`Socket.io is listening on *:${config.server.port}`);
 });
