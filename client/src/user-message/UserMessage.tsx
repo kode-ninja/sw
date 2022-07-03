@@ -22,8 +22,8 @@ const UserMessage = ({type, text, isOpen, toggle}: IUserMessageProps) => {
     return (
         <ToastWrapper>
             <Toast isOpen={isOpen}>
-                <UserMessageHeader type={type} toggle={toggle}/>
-                <UserMessageBody type={type} text={text}/>
+                <UserMessageHeader type={type} toggle={toggle} />
+                <UserMessageBody type={type} text={text} />
             </Toast>
         </ToastWrapper>
     );
