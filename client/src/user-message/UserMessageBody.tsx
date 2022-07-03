@@ -9,7 +9,7 @@ interface IUserMessageBodyProps {
 
 const UserMessageBody = ({type, text}: IUserMessageBodyProps) => {
     return (
-        <ToastBody className={type === TYPE_ERROR ? 'bg-danger' : 'bg-success'}>
+        <ToastBody className={'text-white ' + (type === TYPE_ERROR ? 'bg-danger' : 'bg-success')}>
             {text}
         </ToastBody>
     );
