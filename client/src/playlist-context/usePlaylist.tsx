@@ -1,5 +1,6 @@
 import {useCallback, useContext, useEffect, useState} from "react";
 import {SocketContext} from "../socket-context/SocketContextProvider";
+import {UserMessageContext} from "../app/App";
 
 export interface IPlaylistContextValue {
     playlist: IPlaylistVideo[],
@@ -17,12 +18,16 @@ export interface IPlaylistVideo {
 const usePlaylist = (): IPlaylistContextValue => {
     const [playlist, setPlaylist] = useState([]);
     const socket = useContext(SocketContext);
+    const userMessagesManager = useContext(UserMessageContext);
 
     useEffect(() => {
         /*TODO*/console.log('usePlaylist.useEffect[] subscribing to "playlist:refresh"');
         socket.on("playlist:refresh", data => {
             /*TODO*/console.log('usePlaylist.on("playlist:refresh") data=', data);
             setPlaylist(data);
+        });
+        socket.on("playlist:add:failed", reason => {
+            userMessagesManager?.showUserErrorMessage('Failed adding video' + (reason ? ': ' + reason : ''));
         });
         /*TODO*/console.log('usePlaylist.useEffect[] emit(\'playlist:get\')');
         socket.emit('playlist:get');

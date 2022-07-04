@@ -1,4 +1,5 @@
 const youtubeVideo = require('./youtubeVideo');
+const luxon = require("luxon");
 
 module.exports = (io, socket) => {
 
@@ -8,13 +9,13 @@ module.exports = (io, socket) => {
         const firstItem = youtubeApiData.data.items[0];
         const snippet = firstItem.snippet;
         const contentDetails = firstItem.contentDetails;
-        
+
         return {
             id: youtubeVideoId,
             url: youtubeVideoURL,
             title: snippet.title,
             thumbnail_url: snippet.thumbnails.default.url,
-            duration: contentDetails.duration
+            duration: luxon.Duration.fromISO(contentDetails.duration).toFormat('hh:mm:ss')
         }
     }
 
@@ -24,13 +25,19 @@ module.exports = (io, socket) => {
         try {
             youtubeVideo.validateVideoURLOrFail(url);
             const videoId = youtubeVideo.extractVideoId(url);
+
+            if (playlist.has(videoId)) {
+                sendFailedAddingToPlaylist('Video is already in the playlist');
+                return;
+            }
+
             const youtubeApiData = await youtubeVideo.fetchVideoDataFromYoutubeAPI(videoId);
             const playlistItem = createPlaylistItem(videoId, url, youtubeApiData);
             playlist.set(videoId, playlistItem);
             sendPlaylist();
         } catch (e) {
             console.error('addVideos() failed', e);
-            // TODO: emit an error message to the user
+            sendFailedAddingToPlaylist();
         }
     }
 
@@ -42,6 +49,10 @@ module.exports = (io, socket) => {
     const sendPlaylist = () => {
         console.log(`sendPlaylist: ${playlist.size} items`);
         socket.emit('playlist:refresh', [...playlist.values()]);
+    }
+
+    const sendFailedAddingToPlaylist = (reason = '') => {
+        socket.emit('playlist:add:failed', reason);
     }
 
     socket.on("playlist:get", getPlaylist);
