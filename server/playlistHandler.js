@@ -1,9 +1,9 @@
 const youtubeVideo = require('./youtubeVideo');
 const luxon = require("luxon");
 
-module.exports = (io, socket) => {
+let playlist = new Map();
 
-    let playlist = new Map();
+module.exports = (io, socket) => {
 
     const createPlaylistItem = (youtubeVideoId, youtubeVideoURL, youtubeApiData) => {
         const firstItem = youtubeApiData.data.items[0];
