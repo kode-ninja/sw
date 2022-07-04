@@ -3,7 +3,12 @@ import {useContext} from "react";
 import {PlaylistContext} from "../../playlist-context/PlaylistContextProvider";
 import {ListGroup, ListGroupItem} from "reactstrap";
 import Video from "./video/Video";
+import styled from "styled-components";
 
+const StyledPlaylist = styled(ListGroup)`
+overflow: scroll;
+max-height: 70vh;
+`
 
 const Playlist = () => {
     const playlistContext = useContext(PlaylistContext) ;
@@ -13,7 +18,7 @@ const Playlist = () => {
         return <EmptyPlaylist />
 
     return (
-        <ListGroup>
+        <StyledPlaylist>
             {
                 playlistVideos.map((playlistVideo) => {
                     return (
@@ -23,7 +28,7 @@ const Playlist = () => {
                     );
                 })
             }
-        </ListGroup>
+        </StyledPlaylist>
     );
 }
 
