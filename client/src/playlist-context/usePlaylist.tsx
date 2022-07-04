@@ -35,7 +35,7 @@ const usePlaylist = (): IPlaylistContextValue => {
         return () => {
             socket.off("playlist:refresh");
         }
-    }, [socket]);
+    }, [socket, userMessagesManager]);
 
     const addVideo = useCallback((youtubeURL: string) => {
         socket.emit('playlist:add', {url: youtubeURL});
