@@ -1,14 +1,14 @@
 import {Button, Col, Form, FormFeedback, FormGroup, Input, Label} from "reactstrap";
 import {ChangeEvent, FormEvent, useContext, useState} from "react";
-import {ConnectionContext} from "../../connection-context/ConnectionContextProvider";
 import {PlaylistContext} from "../../playlist-context/PlaylistContextProvider";
+import {SocketContext} from "../../socket-context/SocketContextProvider";
 
 const NO_VALIDATION_ERROR = '';
 
 const AddVideoForm = () => {
     const [videoURL, setVideoURL] = useState('');
     const [validationError, setValidationError] = useState(NO_VALIDATION_ERROR);
-    const connection = useContext(ConnectionContext);
+    const socket = useContext(SocketContext);
     const playlistContext = useContext(PlaylistContext);
 
     const validateForm = () => {
@@ -49,12 +49,13 @@ const AddVideoForm = () => {
                         id="videoURL"
                         placeholder="Enter YouTube Video URL"
                         onChange={(e) => onInputChange(e)}
+                        value={videoURL}
                         invalid={!!validationError}
                     />
                     {validationError && <FormFeedback>{validationError}</FormFeedback>}
                 </Col>
                 <Col>
-                    <Button type="submit" onClick={e => onSubmit(e)} color="primary" disabled={!(!!connection?.isConnected)}>Add</Button>
+                    <Button type="submit" onClick={e => onSubmit(e)} color="primary" disabled={!socket.connected}>Add</Button>
                 </Col>
             </FormGroup>
         </Form>

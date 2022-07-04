@@ -3,8 +3,8 @@ import {Col, Container, Row} from "reactstrap";
 import LeftColumn from "../left-col/LeftColumn";
 import useUserMessage from "../user-message/useUserMessage";
 import {TUserMessageText} from "../user-message/interfaces";
-import ConnectionContextProvider from "../connection-context/ConnectionContextProvider";
 import PlaylistContextProvider from "../playlist-context/PlaylistContextProvider";
+import SocketContextProvider from "../socket-context/SocketContextProvider";
 
 interface IUserMessageManagerContextValue {
     showUserSuccessMessage: (messageText: TUserMessageText, displayDuration?: number) => void,
@@ -18,7 +18,7 @@ function App() {
 
     return (
         <UserMessageContext.Provider value={restOfUserMessageManager}>
-            <ConnectionContextProvider>
+            <SocketContextProvider>
                 <PlaylistContextProvider>
                     <Container className="mt-5">
                         <Row>
@@ -32,7 +32,7 @@ function App() {
                     </Container>
                     {renderUserMessage()}
                 </PlaylistContextProvider>
-            </ConnectionContextProvider>
+            </SocketContextProvider>
         </UserMessageContext.Provider>
     );
 }

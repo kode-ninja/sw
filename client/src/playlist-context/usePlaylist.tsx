@@ -1,34 +1,32 @@
 import {useCallback, useContext, useEffect, useState} from "react";
-import {ConnectionContext} from "../connection-context/ConnectionContextProvider";
+import {SocketContext} from "../socket-context/SocketContextProvider";
 
 export interface IPlaylistContextValue {
-    playlist: any[]    // TODO: type the array
+    playlist: any[],    // TODO: type the array
     addVideo: (youtubeURL: string) => void
 }
 
 const usePlaylist = (): IPlaylistContextValue => {
     const [playlist, setPlaylist] = useState([]);
-    const connection = useContext(ConnectionContext);
+    const socket = useContext(SocketContext);
 
     useEffect(() => {
-        /*TODO*/console.log('usePlaylist.useEffect[connection?.isConnected]', connection?.isConnected);
-        if (connection?.isConnected) {
-            connection.socket?.on("playlist:all", data => {
-                /*TODO*/console.log('usePlaylist.on("playlist:all") data=', data);
-                setPlaylist(data);
-            });
-
-            connection.socket?.emit('playlist:get');
-        }
+        /*TODO*/console.log('usePlaylist.useEffect[] subscribing to "playlist:refresh"');
+        socket.on("playlist:refresh", data => {
+            /*TODO*/console.log('usePlaylist.on("playlist:refresh") data=', data);
+            setPlaylist(data);
+        });
+        /*TODO*/console.log('usePlaylist.useEffect[] emit(\'playlist:get\')');
+        socket.emit('playlist:get');
 
         return () => {
-            connection?.socket?.off("playlist:all");
+            socket.off("playlist:refresh");
         }
-    }, [connection?.isConnected, connection?.socket]);
+    }, [socket]);
 
     const addVideo = useCallback((youtubeURL: string) => {
-        connection?.socket?.emit('playlist:add', {url: youtubeURL});
-    }, [connection?.socket]);
+        socket.emit('playlist:add', {url: youtubeURL});
+    }, [socket]);
 
 
     return {
