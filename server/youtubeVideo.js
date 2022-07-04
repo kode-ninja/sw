@@ -20,6 +20,6 @@ module.exports = {
     },
 
     fetchVideoDataFromYoutubeAPI: (videoId) => {
-        return axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${config.youtube.api_key}`);
+        return axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&part=snippet&id=${videoId}&key=${config.youtube.api_key}`);
     }
 }

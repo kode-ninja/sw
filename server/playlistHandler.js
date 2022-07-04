@@ -4,13 +4,17 @@ module.exports = (io, socket) => {
 
     let playlist = new Map();
 
-    const createPlaylistItem = (youtubeVideoURL, youtubeApiData) => {
-        const video = youtubeApiData.data.items[0].snippet;
+    const createPlaylistItem = (youtubeVideoId, youtubeVideoURL, youtubeApiData) => {
+        const firstItem = youtubeApiData.data.items[0];
+        const snippet = firstItem.snippet;
+        const contentDetails = firstItem.contentDetails;
         
         return {
+            id: youtubeVideoId,
             url: youtubeVideoURL,
-            title: video.title,
-            thumbnail: video.thumbnails.default.url
+            title: snippet.title,
+            thumbnail_url: snippet.thumbnails.default.url,
+            duration: contentDetails.duration
         }
     }
 
@@ -21,7 +25,7 @@ module.exports = (io, socket) => {
             youtubeVideo.validateVideoURLOrFail(url);
             const videoId = youtubeVideo.extractVideoId(url);
             const youtubeApiData = await youtubeVideo.fetchVideoDataFromYoutubeAPI(videoId);
-            const playlistItem = createPlaylistItem(url, youtubeApiData);
+            const playlistItem = createPlaylistItem(videoId, url, youtubeApiData);
             playlist.set(videoId, playlistItem);
             sendPlaylist();
         } catch (e) {

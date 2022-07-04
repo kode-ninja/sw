@@ -2,8 +2,16 @@ import {useCallback, useContext, useEffect, useState} from "react";
 import {SocketContext} from "../socket-context/SocketContextProvider";
 
 export interface IPlaylistContextValue {
-    playlist: any[],    // TODO: type the array
+    playlist: IPlaylistVideo[],
     addVideo: (youtubeURL: string) => void
+}
+
+export interface IPlaylistVideo {
+    id: string,
+    url: string,
+    title: string,
+    thumbnail_url: string,
+    duration: string
 }
 
 const usePlaylist = (): IPlaylistContextValue => {
