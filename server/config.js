@@ -6,6 +6,9 @@ const config = {
     },
     server: {
         port: 3001
+    },
+    youtube: {
+        api_key: process.env.YOUTUBE_DATA_API_KEY
     }
 };
 
