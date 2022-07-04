@@ -22,10 +22,10 @@ function App() {
                 <PlaylistContextProvider>
                     <Container className="mt-5">
                         <Row>
-                            <Col xs={12} lg={4}>
+                            <Col xs={12} lg={5}>
                                 <LeftColumn/>
                             </Col>
-                            <Col xs={12} lg={8} className="order-first order-lg-last">
+                            <Col className="order-first order-lg-last">
 
                             </Col>
                         </Row>
