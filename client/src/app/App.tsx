@@ -5,6 +5,7 @@ import useUserMessage from "../user-message/useUserMessage";
 import {TUserMessageText} from "../user-message/interfaces";
 import PlaylistContextProvider from "../playlist-context/PlaylistContextProvider";
 import SocketContextProvider from "../socket-context/SocketContextProvider";
+import Player from "../right-col/Player";
 
 interface IUserMessageManagerContextValue {
     showUserSuccessMessage: (messageText: TUserMessageText, displayDuration?: number) => void,
@@ -26,7 +27,7 @@ function App() {
                                 <LeftColumn/>
                             </Col>
                             <Col className="order-first order-lg-last">
-
+                                <Player />
                             </Col>
                         </Row>
                     </Container>
