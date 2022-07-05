@@ -5,7 +5,9 @@ const config = require("./config");
 module.exports = {
 
     validateVideoURLOrFail: (youtubeVideoURL) => {
-        // TODO
+        if (!youtubeVideoURL.includes('youtube.com')) {
+            throw new Error('Invalid YouTube video URL (does not include "youtube.com")');
+        }
 
         return true;
     },
