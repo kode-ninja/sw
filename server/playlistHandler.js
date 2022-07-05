@@ -27,14 +27,15 @@ module.exports = (io, socket) => {
             const videoId = youtubeVideo.extractVideoId(url);
 
             if (playlist.has(videoId)) {
-                sendFailedAddingToPlaylist('Video is already in the playlist');
+                sendFailedAddingToPlaylist('Video is already in the playlist.');
+
                 return;
             }
 
             const youtubeApiData = await youtubeVideo.fetchVideoDataFromYoutubeAPI(videoId);
             const playlistItem = createPlaylistItem(videoId, url, youtubeApiData);
             playlist.set(videoId, playlistItem);
-            sendPlaylist();
+            sendPlaylistToAll();
         } catch (e) {
             console.error('addVideos() failed', e);
             sendFailedAddingToPlaylist();
@@ -45,9 +46,11 @@ module.exports = (io, socket) => {
         console.log('removeVideo', videoId);
         if (playlist.has(videoId)) {
             playlist.delete(videoId);
+            sendPlaylistToAll();
         } else {
             // TODO
             console.error(`removeVideo(): videoId "${videoId}" does not exist`);
+            sendPlaylist();//  if video was not found, it may be necessary to refresh the user's playlist
         }
         sendPlaylist();
     }
@@ -60,6 +63,11 @@ module.exports = (io, socket) => {
     const sendPlaylist = () => {
         console.log(`sendPlaylist: ${playlist.size} items`);
         socket.emit('playlist:refresh', [...playlist.values()]);
+    }
+
+    const sendPlaylistToAll = () => {
+        console.log(`sendPlaylistToAll: ${playlist.size} items`);
+        io.sockets.emit('playlist:refresh', [...playlist.values()]);
     }
 
     const sendFailedAddingToPlaylist = (reason = '') => {
