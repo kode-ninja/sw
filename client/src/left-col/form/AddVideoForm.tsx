@@ -42,7 +42,7 @@ const AddVideoForm = () => {
         <Form onSubmit={e => onSubmit(e)}>
             <FormGroup row>
                 <Col xs={9} >
-                    <Label for="videoURL" hidden>Video Id</Label>
+                    <Label for="videoURL" hidden>YouTube Video URL</Label>
                     <Input
                         type="text"
                         name="videoURL"
