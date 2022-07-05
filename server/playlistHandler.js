@@ -50,7 +50,7 @@ module.exports = (io, socket) => {
         } else {
             // TODO
             console.error(`removeVideo(): videoId "${videoId}" does not exist`);
-            sendPlaylist();//  if video was not found, it may be necessary to refresh the user's playlist
+            sendPlaylist();//  if video was not found, refresh the user's playlist to resolve playlist's client-server synchronization issue
         }
         sendPlaylist();
     }
