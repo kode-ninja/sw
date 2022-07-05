@@ -41,6 +41,17 @@ module.exports = (io, socket) => {
         }
     }
 
+    const removeVideo = ({videoId}) => {
+        console.log('removeVideo', videoId);
+        if (playlist.has(videoId)) {
+            playlist.delete(videoId);
+        } else {
+            // TODO
+            console.error(`removeVideo(): videoId "${videoId}" does not exist`);
+        }
+        sendPlaylist();
+    }
+
     const getPlaylist = async () => {
         console.log('getPlaylist');
         sendPlaylist();
@@ -57,6 +68,7 @@ module.exports = (io, socket) => {
 
     socket.on("playlist:get", getPlaylist);
     socket.on("playlist:add", addVideo);
+    socket.on("playlist:remove", removeVideo);
 }
 
 

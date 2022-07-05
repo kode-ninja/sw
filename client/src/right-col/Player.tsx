@@ -20,8 +20,12 @@ const Player = () => {
 
     const firstPlaylistVideo = playlistVideos[0];
 
+    const onEnd = () => {
+        playlistContext?.removeVideo(firstPlaylistVideo.id);
+    }
+
     return (
-        <YouTube className="player" videoId={firstPlaylistVideo.id} opts={reactYouTubeOptions} />
+        <YouTube className="player" videoId={firstPlaylistVideo.id} opts={reactYouTubeOptions} onEnd={onEnd} />
     );
 }
 

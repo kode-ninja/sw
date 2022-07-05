@@ -4,7 +4,8 @@ import {UserMessageContext} from "../app/App";
 
 export interface IPlaylistContextValue {
     playlist: IPlaylistVideo[],
-    addVideo: (youtubeURL: string) => void
+    addVideo: (youtubeURL: string) => void,
+    removeVideo: (videoId: string) => void
 }
 
 export interface IPlaylistVideo {
@@ -41,10 +42,14 @@ const usePlaylist = (): IPlaylistContextValue => {
         socket.emit('playlist:add', {url: youtubeURL});
     }, [socket]);
 
+    const removeVideo = useCallback((videoId: string) => {
+        socket.emit('playlist:remove', {videoId: videoId});
+    }, [socket]);
 
     return {
         playlist,
-        addVideo
+        addVideo,
+        removeVideo
     };
 }
 
