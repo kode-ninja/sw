@@ -8,6 +8,12 @@ const registerPlaylistHandlers = require("./playlistHandler");
 
 app.use(cors());
 
+if (!config.youtube.api_key) {
+    console.error('"YOUTUBE_DATA_API_KEY" is missing in .env file');
+    return;
+}
+
+
 const server = require("http").createServer();
 const io = new Server(server, {
     cors: {
@@ -16,15 +22,9 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    console.log('a user connected on socket.id', socket.id);         // TODO: delete
-
     registerPlaylistHandlers(io, socket);
-
-    socket.on('disconnect', () => {
-        console.log('user disconnected from socket.id', socket.id);   // TODO: delete
-    });
 });
 
 server.listen(config.server.port, () => {
-    console.log(`Socket.io is listening on *:${config.server.port}`);
+    console.log(`Server is listening on *:${config.server.port}`);
 });
