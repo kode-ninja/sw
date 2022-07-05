@@ -1,4 +1,4 @@
-import {useCallback, useContext, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useReducer} from "react";
 import {SocketContext} from "../socket-context/SocketContextProvider";
 import {UserMessageContext} from "../app/App";
 
@@ -16,25 +16,60 @@ export interface IPlaylistVideo {
     duration: string
 }
 
+enum REDUCER_ACTIONS {
+    ADD_VIDEO = 'ADD_VIDEO',
+    REMOVE_VIDEO = 'REMOVE_VIDEO',
+    SET_PLAYLIST = 'SET_PLAYLIST'
+}
+
+type IReducerAction =
+| {type: REDUCER_ACTIONS.ADD_VIDEO, video: IPlaylistVideo }
+| {type: REDUCER_ACTIONS.REMOVE_VIDEO}
+| {type: REDUCER_ACTIONS.SET_PLAYLIST, playlist: IPlaylistVideo[]}
+
+const reducer = (playlist: IPlaylistVideo[], action: IReducerAction): IPlaylistVideo[] => {
+    console.log('usePlaylist.reducer() action=', action.type, 'playlist=', playlist.length);/*TODO*/
+    switch (action.type) {
+        case REDUCER_ACTIONS.ADD_VIDEO:
+            return [...playlist, action.video]
+        case REDUCER_ACTIONS.REMOVE_VIDEO:
+            return playlist.slice(1);
+        case REDUCER_ACTIONS.SET_PLAYLIST:
+            return action.playlist;
+        default:
+            console.error('Invalid action', action);
+            return playlist;
+    }
+}
+
 const usePlaylist = (): IPlaylistContextValue => {
-    const [playlist, setPlaylist] = useState([]);
+    const [playlist, dispatch] = useReducer(reducer, []);
     const socket = useContext(SocketContext);
     const userMessagesManager = useContext(UserMessageContext);
 
     useEffect(() => {
-        /*TODO*/console.log('usePlaylist.useEffect[] subscribing to "playlist:refresh"');
-        socket.on("playlist:refresh", data => {
-            /*TODO*/console.log('usePlaylist.on("playlist:refresh") data=', data);
-            setPlaylist(data);
+        /*TODO*/console.log('usePlaylist.useEffect[] subscribing...');
+        socket.on("playlist", (playlistData: IPlaylistVideo[]) => {
+            dispatch({ type: REDUCER_ACTIONS.SET_PLAYLIST, playlist: playlistData });
         });
-        socket.on("playlist:add:failed", reason => {
+        socket.on("playlist:add", (video: IPlaylistVideo) => {
+            dispatch({ type: REDUCER_ACTIONS.ADD_VIDEO, video });
+        });
+        socket.on("playlist:add:failed", (reason: string) => {
             userMessagesManager?.showUserErrorMessage('Failed adding video' + (reason ? ': ' + reason : ''));
         });
+        socket.on("playlist:remove", () => {
+            dispatch({ type: REDUCER_ACTIONS.REMOVE_VIDEO });
+        });
+
         /*TODO*/console.log('usePlaylist.useEffect[] emit(\'playlist:get\')');
         socket.emit('playlist:get');
 
         return () => {
-            socket.off("playlist:refresh");
+            socket.off("playlist");
+            socket.off("playlist:add");
+            socket.off("playlist:add:failed");
+            socket.off("playlist:remove");
         }
     }, [socket, userMessagesManager]);
 
@@ -42,8 +77,8 @@ const usePlaylist = (): IPlaylistContextValue => {
         socket.emit('playlist:add', {url: youtubeURL});
     }, [socket]);
 
-    const removeVideo = useCallback((videoId: string) => {
-        socket.emit('playlist:remove', {videoId: videoId});
+    const removeVideo = useCallback(() => {
+        socket.emit('playlist:remove');
     }, [socket]);
 
     return {

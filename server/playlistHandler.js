@@ -1,7 +1,7 @@
 const youtubeVideo = require('./youtubeVideo');
 const luxon = require("luxon");
 
-let playlist = new Map();
+let playlist = [];
 
 module.exports = (io, socket) => {
 
@@ -19,63 +19,63 @@ module.exports = (io, socket) => {
         }
     }
 
-    const addVideo = async ({url}) => {
+    const onAddVideo = async ({url}) => {
         console.log('addVideo', url);
 
         try {
             youtubeVideo.validateVideoURLOrFail(url);
             const videoId = youtubeVideo.extractVideoId(url);
 
-            if (playlist.has(videoId)) {
-                sendFailedAddingToPlaylist('Video is already in the playlist.');
+            const existsInPlaylist = playlist.find(video => video.id === videoId);
+            if (existsInPlaylist) {
+                sendFailedAddingToPlaylist('This video is already in the playlist.');
 
                 return;
             }
 
             const youtubeApiData = await youtubeVideo.fetchVideoDataFromYoutubeAPI(videoId);
             const playlistItem = createPlaylistItem(videoId, url, youtubeApiData);
-            playlist.set(videoId, playlistItem);
-            sendPlaylistToAll();
+            playlist.push(playlistItem);
+            sendAddVideoToAll(playlistItem);
         } catch (e) {
             console.error('addVideos() failed', e);
             sendFailedAddingToPlaylist();
         }
     }
 
-    const removeVideo = ({videoId}) => {
-        console.log('removeVideo', videoId);
-        if (playlist.has(videoId)) {
-            playlist.delete(videoId);
-            sendPlaylistToAll();
-        } else {
-            console.error(`removeVideo(): videoId "${videoId}" does not exist`);
-            sendPlaylist();//  if video was not found, refresh the user's playlist to resolve playlist's client-server synchronization issue
-        }
+    const onRemoveVideo = () => {
+        console.log('removeVideo');
+        playlist.shift();
+        sendRemoveVideoToAll();
+    }
+
+    const onGetPlaylist = () => {
+        console.log('onGetPlaylist');
         sendPlaylist();
     }
 
-    const getPlaylist = async () => {
-        console.log('getPlaylist');
-        sendPlaylist();
+    const sendAddVideoToAll = (video) => {
+        console.log('sendAddVideoToAll');
+        io.sockets.emit('playlist:add', video);
+    }
+
+    const sendRemoveVideoToAll = () => {
+        console.log('sendRemoveVideoToAll');
+        io.sockets.emit('playlist:remove');
     }
 
     const sendPlaylist = () => {
-        console.log(`sendPlaylist: ${playlist.size} items`);
-        socket.emit('playlist:refresh', [...playlist.values()]);
-    }
-
-    const sendPlaylistToAll = () => {
-        console.log(`sendPlaylistToAll: ${playlist.size} items`);
-        io.sockets.emit('playlist:refresh', [...playlist.values()]);
+        console.log(`sendPlaylist: ${playlist.length} items`);
+        socket.emit('playlist', playlist);
     }
 
     const sendFailedAddingToPlaylist = (reason = '') => {
         socket.emit('playlist:add:failed', reason);
     }
 
-    socket.on("playlist:get", getPlaylist);
-    socket.on("playlist:add", addVideo);
-    socket.on("playlist:remove", removeVideo);
+    socket.on("playlist:get", onGetPlaylist);
+    socket.on("playlist:add", onAddVideo);
+    socket.on("playlist:remove", onRemoveVideo);
 }
 
 
