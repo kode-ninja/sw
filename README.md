@@ -23,7 +23,7 @@ Assuming there are very few playlist editors, but many viewers:
   - `playlist:remove` - user finished to watch a video and requests its removal from the list
 
 ### Suggested optimizations
-Background: Unlike the current implementation, in which the playlist is stored in-memory, in production it will be persisted in a DB (to persist the playlist in case of server restart or crash).
+Background: Unlike this project's implementation, in which the playlist is stored in-memory, in production it will be persisted in a DB (restore-able in case of server restart or crash).
 
 #### In-memory data store
 To optimize `playlist:get` requests, the playlist can be loaded into memory (from DB) and serve clients from memory
