@@ -1,6 +1,24 @@
-# Getting Started with Create React App
+# Home Assignment React App
+
+## Introduction
+
+This is a web interface that allows the user to create a playlist of YouTube videos, and plays them in order.
+
+- It starts with an empty playlist, and nothing playing in the player.
+- A user can add a video by inserting a YouTube URL into the input field and pressing enter / clicking add.
+- After adding the video, it is added to the bottom of the list, showing its thumbnail, title and length.
+- The player plays the videos in the order they were added.
+- Once a video finishes playing, it is removed from the list, and the next video will begin
+  playing.
+- When the playlist is empty and the first song is added, it's immediately starts to play.
+- If a client joined when there’s an active playlist, the player will play the first song in the list, from the beginning.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Quick Start
+- Install the client app by running `npm install` in the `client` directory.
+- Make sure port `3000` is available on your computer.
+- Start the client app by running `npm start` in the `client` directory.
 
 ## Available Scripts
 
