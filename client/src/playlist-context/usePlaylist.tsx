@@ -24,7 +24,7 @@ enum REDUCER_ACTIONS {
 
 type IReducerAction =
 | {type: REDUCER_ACTIONS.ADD_VIDEO, video: IPlaylistVideo }
-| {type: REDUCER_ACTIONS.REMOVE_VIDEO}
+| {type: REDUCER_ACTIONS.REMOVE_VIDEO, videoId: string}
 | {type: REDUCER_ACTIONS.SET_PLAYLIST, playlist: IPlaylistVideo[]}
 
 const reducer = (playlist: IPlaylistVideo[], action: IReducerAction): IPlaylistVideo[] => {
@@ -32,7 +32,7 @@ const reducer = (playlist: IPlaylistVideo[], action: IReducerAction): IPlaylistV
         case REDUCER_ACTIONS.ADD_VIDEO:
             return [...playlist, action.video]
         case REDUCER_ACTIONS.REMOVE_VIDEO:
-            return playlist.slice(1);
+            return playlist.filter(video => video.id !== action.videoId);
         case REDUCER_ACTIONS.SET_PLAYLIST:
             return action.playlist;
         default:
@@ -56,8 +56,8 @@ const usePlaylist = (): IPlaylistContextValue => {
         socket.on("playlist:add:failed", (reason: string) => {
             userMessagesManager?.showUserErrorMessage('Failed adding video' + (reason ? ': ' + reason : ''));
         });
-        socket.on("playlist:remove", () => {
-            dispatch({ type: REDUCER_ACTIONS.REMOVE_VIDEO });
+        socket.on("playlist:remove", (videoId: string) => {
+            dispatch({ type: REDUCER_ACTIONS.REMOVE_VIDEO, videoId });
         });
 
         socket.emit('playlist:get');
@@ -74,8 +74,8 @@ const usePlaylist = (): IPlaylistContextValue => {
         socket.emit('playlist:add', {url: youtubeURL});
     }, [socket]);
 
-    const removeVideo = useCallback(() => {
-        socket.emit('playlist:remove');
+    const removeVideo = useCallback((videoId: string) => {
+        socket.emit('playlist:remove', videoId);
     }, [socket]);
 
     return {

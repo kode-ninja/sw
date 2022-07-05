@@ -41,9 +41,12 @@ module.exports = (io, socket) => {
         }
     }
 
-    const onRemoveVideo = () => {
-        playlist.shift();
-        sendRemoveVideoToAll();
+    const onRemoveVideo = (videoId) => {
+        const index = playlist.findIndex((video) => video.id === videoId);
+        if (index !== -1) {
+            playlist.splice(index, 1);
+        }
+        sendRemoveVideoToAll(videoId);
     }
 
     const onGetPlaylist = () => {
@@ -54,8 +57,8 @@ module.exports = (io, socket) => {
         io.sockets.emit('playlist:add', video);
     }
 
-    const sendRemoveVideoToAll = () => {
-        io.sockets.emit('playlist:remove');
+    const sendRemoveVideoToAll = (videoId) => {
+        io.sockets.emit('playlist:remove', videoId);
     }
 
     const sendPlaylist = () => {
