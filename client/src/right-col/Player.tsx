@@ -4,7 +4,7 @@ import YouTube from 'react-youtube';
 import "./Player.css";
 
 const reactYouTubeOptions = {
-    width: '100%',          // Responsive width & height: rest of the CSS is in Player.css
+    width: '100%',          // responsive width & height: rest of the CSS is in Player.css
     height: '100%',
     playerVars: {
         autoplay: 1,        // https://developers.google.com/youtube/iframe_api_reference#Autoplay_and_scripted_playback
