@@ -7,21 +7,13 @@ const cors = require("cors");
 const registerPlaylistHandlers = require("./playlistHandler");
 
 app.use(cors());
-app.use(express.json());
 
-const httpServer = require("http").createServer();
-const io = new Server(httpServer, {
+const server = require("http").createServer();
+const io = new Server(server, {
     cors: {
         origin: `${config.app.schema}://${config.app.host}:${config.app.port}`,
-        methods: ["GET", "POST"]            // TODO: POST required?
     }
 });
-
-// TODO: delete comment
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/index.html');
-// });
-
 
 io.on('connection', (socket) => {
     console.log('a user connected on socket.id', socket.id);         // TODO: delete
@@ -33,6 +25,6 @@ io.on('connection', (socket) => {
     });
 });
 
-httpServer.listen(config.server.port, () => {
+server.listen(config.server.port, () => {
     console.log(`Socket.io is listening on *:${config.server.port}`);
 });
