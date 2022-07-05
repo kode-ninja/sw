@@ -28,7 +28,6 @@ type IReducerAction =
 | {type: REDUCER_ACTIONS.SET_PLAYLIST, playlist: IPlaylistVideo[]}
 
 const reducer = (playlist: IPlaylistVideo[], action: IReducerAction): IPlaylistVideo[] => {
-    console.log('usePlaylist.reducer() action=', action.type, 'playlist=', playlist.length);/*TODO*/
     switch (action.type) {
         case REDUCER_ACTIONS.ADD_VIDEO:
             return [...playlist, action.video]
@@ -37,7 +36,7 @@ const reducer = (playlist: IPlaylistVideo[], action: IReducerAction): IPlaylistV
         case REDUCER_ACTIONS.SET_PLAYLIST:
             return action.playlist;
         default:
-            console.error('Invalid action', action);
+            // console.error('Invalid action', action);
             return playlist;
     }
 }
@@ -48,7 +47,6 @@ const usePlaylist = (): IPlaylistContextValue => {
     const userMessagesManager = useContext(UserMessageContext);
 
     useEffect(() => {
-        /*TODO*/console.log('usePlaylist.useEffect[] subscribing...');
         socket.on("playlist", (playlistData: IPlaylistVideo[]) => {
             dispatch({ type: REDUCER_ACTIONS.SET_PLAYLIST, playlist: playlistData });
         });
@@ -62,7 +60,6 @@ const usePlaylist = (): IPlaylistContextValue => {
             dispatch({ type: REDUCER_ACTIONS.REMOVE_VIDEO });
         });
 
-        /*TODO*/console.log('usePlaylist.useEffect[] emit(\'playlist:get\')');
         socket.emit('playlist:get');
 
         return () => {
