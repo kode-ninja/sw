@@ -20,8 +20,6 @@ module.exports = (io, socket) => {
     }
 
     const onAddVideo = async ({url}) => {
-        console.log('addVideo', url);
-
         try {
             youtubeVideo.validateVideoURLOrFail(url);
             const videoId = youtubeVideo.extractVideoId(url);
@@ -44,28 +42,23 @@ module.exports = (io, socket) => {
     }
 
     const onRemoveVideo = () => {
-        console.log('removeVideo');
         playlist.shift();
         sendRemoveVideoToAll();
     }
 
     const onGetPlaylist = () => {
-        console.log('onGetPlaylist');
         sendPlaylist();
     }
 
     const sendAddVideoToAll = (video) => {
-        console.log('sendAddVideoToAll');
         io.sockets.emit('playlist:add', video);
     }
 
     const sendRemoveVideoToAll = () => {
-        console.log('sendRemoveVideoToAll');
         io.sockets.emit('playlist:remove');
     }
 
     const sendPlaylist = () => {
-        console.log(`sendPlaylist: ${playlist.length} items`);
         socket.emit('playlist', playlist);
     }
 
