@@ -2,12 +2,12 @@
 
 This is a web interface that allows the user to create a playlist of YouTube videos, and plays them in order and a server backend, which stores, and serves the playlist.
 
-Two projects are included: `server` and `client`:
+Two projects are included: [client](https://github.com/kode-ninja/sw/tree/master/client) and [server](https://github.com/kode-ninja/sw/tree/master/server):
 - server: Socket.io server that serves the React application
 - client: React application 
 
 ## Quick Start
-Install both the client and server apps: a README.md file is available for each of the projects with detailed instructions.
+Install both the [client](https://github.com/kode-ninja/sw/tree/master/client) and [server](https://github.com/kode-ninja/sw/tree/master/server) apps: a `README.md` file is available for each of the projects with detailed instructions.
 
 And then:
 - Start the server
@@ -27,7 +27,7 @@ Background: Unlike the current implementation, in which the playlist is stored i
 
 #### In-memory data store
 To optimize `playlist:get` requests, the playlist can be loaded into memory (from DB) and serve clients from memory
-- This solution will reduce DB load (less queries will hit the DB).
+- This solution will reduce DB load (fewer queries will hit the DB).
 - Each change to the playlist (i.e. `playlist:remove`, `playlist:add`) should then be applied both to DB **and** memory store, while updating the DB can occur async (eventual consistency).
 
 #### Multiple Socket.IO servers (nodes)

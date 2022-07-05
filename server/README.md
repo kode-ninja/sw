@@ -7,14 +7,22 @@ Functionality includes:
 - Stores/serves the playlist.
 - All clients see the same playlist.
 - Once a user added a video, other clients see the addition.
-- YouTube API is being used to fetch video data
+- YouTube API is being used to fetch video data.
 
 ## Quick Start
 
+### Requirements
+After installing the server app, a `.env` file must be created in the root directory.
+
+Please follow the steps below to get the server up and running.
+
+### Installation
 - Install the server by running `npm install` in the `server` directory.
 - Add a `.env` file in the root directory and set a `YOUTUBE_DATA_API_KEY` entry.
   - For example: `YOUTUBE_DATA_API_KEY=abcdEFG`
   - A video explaining [How to Get YouTube API Key](https://www.youtube.com/watch?v=N18czV5tj5o).
+
+### Starting the server
 - Make sure port `3001` is available on your computer, or set `SERVER_PORT` in your `.env` file.
 - Start the server by running `npm start` in the `server` directory.
 
